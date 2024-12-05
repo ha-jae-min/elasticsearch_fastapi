@@ -26,13 +26,16 @@ def create_index_with_nori(index_name):
                 "embedding": {  # 벡터 필드
                     "type": "dense_vector",
                     "dims": 200  # 임베딩 차원
+                },
+                "sku": {  # sku 필드 추가
+                    "type": "keyword"  # 고유 값이므로 keyword 타입 사용
                 }
             }
         }
     }
+
     if not es.indices.exists(index=index_name):
         es.indices.create(index=index_name, body=settings)
         print(f"인덱스 '{index_name}' 생성 완료!")
     else:
         print(f"인덱스 '{index_name}' 이미 존재.")
-
