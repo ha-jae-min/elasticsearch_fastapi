@@ -1,7 +1,8 @@
 from elasticsearch import Elasticsearch
 
 def delete_index(index_name):
-    es = Elasticsearch("http://10.10.10.54:9200")
+    # es = Elasticsearch("http://10.10.10.54:9200")
+    es = Elasticsearch("http://localhost:9200")
     
     # 인덱스가 존재하는지 확인 후 삭제
     if es.indices.exists(index=index_name):
