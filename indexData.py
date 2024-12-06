@@ -1,8 +1,8 @@
 from elasticsearch import Elasticsearch
 from getEmbedding import get_embedding
 
-es = Elasticsearch("http://10.10.10.54:9200")
-# es = Elasticsearch("http://localhost:9200")
+# es = Elasticsearch("http://10.10.10.54:9200")
+es = Elasticsearch("http://localhost:9200")
 
 def index_data(index_name, sku, text):
     embedding = get_embedding(text).tolist()  # NumPy 배열을 리스트로 변환

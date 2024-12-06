@@ -8,8 +8,8 @@ import requests
 
 app = FastAPI()
 
-es = Elasticsearch("http://10.10.10.54:9200")
-# es = Elasticsearch("http://localhost:9200")
+# es = Elasticsearch("http://10.10.10.54:9200")
+es = Elasticsearch("http://localhost:9200")
 
 # FastAPI 서버 시작 시, 인덱스를 생성
 create_index_with_nori("products")  # 인덱스 생성 (한 번만 실행)
@@ -24,36 +24,31 @@ async def root():
     return {"message": "Connected to FastAPI"}
 
 @app.get("/search")
-async def search_and_fetch_data(query: str, page: int = 1, size: int = 10):
+async def search_sku(query: str):
     try:
-        # Elasticsearch 검색
-        results = knn_search("products", query, size=20)
-        
+        # Elasticsearch 검색 수행
+        results = knn_search("products", query)
+
+        # 응답 데이터 검증
         if "hits" not in results or "hits" not in results["hits"]:
             raise ValueError("Invalid response structure from knn_search")
 
-        # 결과에서 SKU 리스트 추출
+        # SKU 리스트 추출
         sku_list = [
             hit["_source"]["sku"]
             for hit in results["hits"]["hits"]
+            if "_source" in hit and "sku" in hit["_source"]  # 데이터 검증 추가
         ]
 
         # SKU 리스트 출력
         print("SKU List:", sku_list)
 
-        # Spring Boot API 호출
-        spring_boot_url = "http://localhost:8080/api/v1/product/search"
-        spring_response = requests.post(
-            spring_boot_url,
-            json={"skuList": sku_list, "page": page, "size": size}  # 페이징 정보 추가
-        )
-
-        # Spring Boot에서 반환된 최종 결과 반환
-        return spring_response.json()
+        return {"skuList": sku_list}
 
     except Exception as e:
-        print(f"Error: {str(e)}")  # 로그로 출력
-        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+        # 예외 처리 및 로그 출력
+        print(f"Error during SKU search: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error during SKU search: {str(e)}")
 
 
 @app.post("/index")

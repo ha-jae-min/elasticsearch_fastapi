@@ -1,8 +1,8 @@
 from elasticsearch import Elasticsearch
 from getEmbedding import get_embedding
 
-es = Elasticsearch("http://10.10.10.54:9200")
-# es = Elasticsearch("http://localhost:9200")
+# es = Elasticsearch("http://10.10.10.54:9200")
+es = Elasticsearch("http://localhost:9200")
 
 def create_index_with_nori(index_name):
     # 인덱스 설정
