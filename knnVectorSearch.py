@@ -2,14 +2,29 @@ from elasticsearch import Elasticsearch
 from getEmbedding import get_embedding
 from sklearn.metrics.pairwise import cosine_similarity
 
-# es = Elasticsearch("http://10.10.10.54:9200")
-es = Elasticsearch("http://localhost:9200")
+es = Elasticsearch("http://10.10.10.54:9200")
+# es = Elasticsearch("http://localhost:9200")
 
-def knn_search(index_name, query_text, threshold=0.7):
+def knn_search(index_name, query_text, threshold=0.7, size=20):  # size를 파라미터로 추가
     query_embedding = get_embedding(query_text).tolist()
-    
-    # 1. 벡터 검색 기반 스코어 계산
+
+    # 1. 어휘 검색으로 후보군 확장
+    lexical_query = {
+        "size": size,  # 최대 20개 결과 반환
+        "query": {
+            "match": {
+                "title": {
+                    "query": query_text,
+                    "fuzziness": "AUTO",
+                    "prefix_length": 1
+                }
+            }
+        }
+    }
+
+    # 2. 벡터 검색 기반 스코어 계산
     vector_query = {
+        "size": size,  # 최대 20개 결과 반환
         "query": {
             "script_score": {
                 "query": {"match_all": {}},
@@ -29,18 +44,8 @@ def knn_search(index_name, query_text, threshold=0.7):
         if hit["_score"] - 1.0 >= threshold  # 스코어에서 1.0을 빼고 threshold와 비교
     ]
 
-    # 2. 어휘 검색으로 후보군 확장
-    lexical_query = {
-        "query": {
-            "match": {
-                "title": {
-                    "query": query_text,
-                    "fuzziness": "AUTO",
-                    "prefix_length": 1
-                }
-            }
-        }
-    }
+
+
 
     lexical_results = es.search(index=index_name, body=lexical_query)
 
@@ -55,7 +60,8 @@ def knn_search(index_name, query_text, threshold=0.7):
 
     return {
         "hits": {
-            "hits": sorted_results,
+            "hits": sorted_results[:size],  # 최종 결과를 size로 제한
             "total": {"value": len(sorted_results), "relation": "eq"}
         }
     }
+
