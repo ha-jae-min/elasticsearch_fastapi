@@ -1,18 +1,13 @@
 from fastapi import FastAPI, HTTPException
 from knnVectorSearch import knn_search
-from createIndexWithNori import create_index_with_nori
 from getEmbedding import get_embedding
 from elasticsearch import Elasticsearch
 from pydantic import BaseModel
-import requests
 
 app = FastAPI()
 
 # es = Elasticsearch("http://10.10.10.54:9200")
 es = Elasticsearch("http://localhost:9200")
-
-# FastAPI 서버 시작 시, 인덱스를 생성
-create_index_with_nori("products")  # 인덱스 생성 (한 번만 실행)
 
 # 요청 스키마 정의
 class IndexRequest(BaseModel):
@@ -26,6 +21,8 @@ async def root():
 @app.get("/search")
 async def search_sku(query: str):
     try:
+        print(f"Received query: {query}")  # 쿼리 로그
+
         # Elasticsearch 검색 수행
         results = knn_search("products", query)
 
@@ -40,15 +37,14 @@ async def search_sku(query: str):
             if "_source" in hit and "sku" in hit["_source"]  # 데이터 검증 추가
         ]
 
-        # SKU 리스트 출력
-        print("SKU List:", sku_list)
+        print("SKU List:", sku_list)  # SKU 리스트 로그
 
         return {"skuList": sku_list}
 
     except Exception as e:
-        # 예외 처리 및 로그 출력
-        print(f"Error during SKU search: {str(e)}")
+        print(f"Error during SKU search: {str(e)}")  # 에러 로그
         raise HTTPException(status_code=500, detail=f"Error during SKU search: {str(e)}")
+
 
 
 @app.post("/index")

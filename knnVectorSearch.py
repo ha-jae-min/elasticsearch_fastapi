@@ -7,17 +7,19 @@ es = Elasticsearch("http://localhost:9200")
 
 def knn_search(index_name, query_text, threshold=0.7):
     try:
-        # 1. 어휘 검색 쿼리 작성
+        # 1. 어휘 검색 쿼리 작성 (개선된 어휘 검색)
         lexical_query = {
             "query": {
                 "match": {
                     "title": {
                         "query": query_text,
-                        "fuzziness": "AUTO",
-                        "prefix_length": 1,
+                        "fuzziness": "AUTO",  # 오타 보정
+                        "prefix_length": 2,  # 최소 일치 길이
+                        "max_expansions": 50  # 후보군 확장 제한
                     }
                 }
             },
+            "size": 50  # 어휘 검색 결과 제한
         }
 
         # 어휘 검색 실행
@@ -37,6 +39,7 @@ def knn_search(index_name, query_text, threshold=0.7):
                     },
                 },
             },
+            "size": 50  # 벡터 검색 결과 제한
         }
 
         # 벡터 검색 실행
@@ -72,4 +75,3 @@ def knn_search(index_name, query_text, threshold=0.7):
     except Exception as e:
         print(f"Error during KNN and lexical search: {str(e)}")
         raise RuntimeError(f"KNN and lexical search failed: {str(e)}")
-

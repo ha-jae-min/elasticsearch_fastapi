@@ -2,8 +2,7 @@ from gensim.models import KeyedVectors
 import numpy as np
 
 # Gensim 사전 학습된 모델 로드
-# 예: 한국어 Word2Vec 모델 로드 (파일 경로 수정 필요)
-model_path = "C:/korea/ko.vec"  # 실제 모델 경로로 수정
+model_path = "C:/korea/product.vec"  # 실제 모델 경로로 수정
 word2vec = KeyedVectors.load_word2vec_format(model_path, binary=False)
 
 def get_embedding(text: str):
@@ -21,4 +20,3 @@ def get_embedding(text: str):
         embedding[0] = -1  # 예를 들어 첫 번째 값을 -1로 설정
 
     return embedding
-

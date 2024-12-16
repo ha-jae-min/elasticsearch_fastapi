@@ -1,4 +1,5 @@
 from elasticsearch import Elasticsearch
+from createIndexWithNori import create_index_with_nori
 
 def delete_index(index_name):
     # es = Elasticsearch("http://10.10.10.54:9200")
@@ -13,3 +14,6 @@ def delete_index(index_name):
 
 # 예시: "products" 인덱스 삭제
 delete_index("products")
+
+# 다시 생성
+create_index_with_nori("products") 
