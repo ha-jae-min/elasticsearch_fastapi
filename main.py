@@ -6,8 +6,8 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-# es = Elasticsearch("http://10.10.10.54:9200")
-es = Elasticsearch("http://localhost:9200")
+es = Elasticsearch("http://10.10.10.121:9200")
+# es = Elasticsearch("http://localhost:9200")
 
 # 요청 스키마 정의
 class IndexRequest(BaseModel):
