@@ -2,7 +2,7 @@ from elasticsearch import Elasticsearch
 from createIndexWithNori import create_index_with_nori
 
 def delete_index(index_name):
-    es = Elasticsearch("https://allmartsystem.shop/elastic")
+    es = Elasticsearch("http://3.35.224.157:9200")
     # es = Elasticsearch("http://localhost:9200")
     
     # 인덱스가 존재하는지 확인 후 삭제

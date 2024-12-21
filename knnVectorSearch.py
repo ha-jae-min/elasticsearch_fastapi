@@ -2,7 +2,7 @@ from elasticsearch import Elasticsearch
 from getEmbedding import get_embedding
 from sklearn.metrics.pairwise import cosine_similarity
 
-es = Elasticsearch("https://allmartsystem.shop/elastic")
+es = Elasticsearch("http://3.35.224.157:9200")
 # es = Elasticsearch("http://localhost:9200")
 
 def knn_search(index_name, query_text, threshold=0.7):
