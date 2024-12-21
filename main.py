@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-es = Elasticsearch("http://10.10.10.121:9200")
+es = Elasticsearch("https://allmartsystem.shop/elastic")
 # es = Elasticsearch("http://localhost:9200")
 
 # 요청 스키마 정의
@@ -14,11 +14,11 @@ class IndexRequest(BaseModel):
     name: str
     sku: str
 
-@app.get("/")
+@app.get("/fapi")
 async def root():
     return {"message": "Connected to FastAPI"}
 
-@app.get("/search")
+@app.get("/fapi/search")
 async def search_sku(query: str):
     try:
         print(f"Received query: {query}")  # 쿼리 로그
@@ -47,7 +47,7 @@ async def search_sku(query: str):
 
 
 
-@app.post("/index")
+@app.post("/fapi/index")
 async def index_data(request: IndexRequest):
     try:
         # 요청에서 값 가져오기

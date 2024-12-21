@@ -1,7 +1,7 @@
 from elasticsearch import Elasticsearch
 from getEmbedding import get_embedding
 
-es = Elasticsearch("http://10.10.10.121:9200")
+es = Elasticsearch("https://allmartsystem.shop/elastic")
 # es = Elasticsearch("http://localhost:9200")
 
 def index_data(index_name, sku, text):
