@@ -1,7 +1,7 @@
 from elasticsearch import Elasticsearch
 from getEmbedding import get_embedding
 
-es = Elasticsearch("http://3.35.224.157:9200")
+es = Elasticsearch("http://3.38.203.147:9200")
 # es = Elasticsearch("http://localhost:9200")
 
 def create_index_with_nori(index_name):
